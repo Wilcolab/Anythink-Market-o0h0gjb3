@@ -17,6 +17,7 @@ exports.calculate = function(req, res) {
     'multiply': function(a, b) { return a * b },
     'power':    function(a, b) { return Math.pow(Number(a), Number(b)) },
     'divide':   function(a, b) { return a / b },
+    'sqrt':     function(a) { return Math.sqrt(Number(a)) },
   };
 
   if (!req.query.operation) {
@@ -29,6 +30,23 @@ exports.calculate = function(req, res) {
     throw new Error("Invalid operation: " + req.query.operation);
   }
 
+  // Handle single operand operations (like sqrt)
+  if (req.query.operation === 'sqrt') {
+    if (!req.query.operand1 ||
+        !req.query.operand1.match(/^(-)?[0-9\.]+(e(-)?[0-9]+)?$/) ||
+        req.query.operand1.replace(/[-0-9e]/g, '').length > 1) {
+      throw new Error("Invalid operand1: " + req.query.operand1);
+    }
+    
+    if (Number(req.query.operand1) < 0) {
+      throw new Error("Cannot calculate square root of negative number");
+    }
+    
+    res.json({ result: operation(req.query.operand1) });
+    return;
+  }
+
+  // Handle two operand operations
   if (!req.query.operand1 ||
       !req.query.operand1.match(/^(-)?[0-9\.]+(e(-)?[0-9]+)?$/) ||
       req.query.operand1.replace(/[-0-9e]/g, '').length > 1) {

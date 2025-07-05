@@ -33,6 +33,9 @@ function calculate(operand1, operand2, operation) {
         case '/':
             uri += "?operation=divide";
             break;
+        case '^':
+            uri += "?operation=power";
+            break;
         default:
             setError();
             return;
@@ -132,16 +135,158 @@ function equalPressed() {
     calculate(operand1, operand2, operation);
 }
 
+// New function for square root
+function sqrtPressed() {
+    var currentValue = getValue();
+    
+    if (currentValue < 0) {
+        setError();
+        return;
+    }
+    
+    var uri = location.origin + "/arithmetic?operation=sqrt&operand1=" + encodeURIComponent(currentValue);
+    
+    setLoading(true);
+    
+    var http = new XMLHttpRequest();
+    http.open("GET", uri, true);
+    http.onload = function () {
+        setLoading(false);
+        
+        if (http.status == 200) {
+            var response = JSON.parse(http.responseText);
+            setValue(response.result);
+            state = states.complete;
+        } else {
+            setError();
+        }
+    };
+    http.send(null);
+}
+
+// Dark Mode Toggle Functionality
+function toggleTheme() {
+    const body = document.body;
+    const themeToggle = document.getElementById('theme-toggle');
+    
+    body.classList.toggle('dark-mode');
+    
+    // Update button icon and save preference
+    if (body.classList.contains('dark-mode')) {
+        themeToggle.textContent = '☀️';
+        localStorage.setItem('calculator-theme', 'dark');
+    } else {
+        themeToggle.textContent = '🌙';
+        localStorage.setItem('calculator-theme', 'light');
+    }
+}
+
+// Load saved theme preference on page load
+function loadTheme() {
+    const savedTheme = localStorage.getItem('calculator-theme');
+    const body = document.body;
+    const themeToggle = document.getElementById('theme-toggle');
+    
+    if (savedTheme === 'dark') {
+        body.classList.add('dark-mode');
+        themeToggle.textContent = '☀️';
+    } else {
+        body.classList.remove('dark-mode');
+        themeToggle.textContent = '🌙';
+    }
+}
+
+// Initialize theme when page loads
+document.addEventListener('DOMContentLoaded', function() {
+    loadTheme();
+    
+    // Add press animation to all buttons
+    const buttons = document.querySelectorAll('.btn');
+    buttons.forEach(button => {
+        button.addEventListener('mousedown', function() {
+            addButtonPressAnimation(this);
+        });
+        
+        button.addEventListener('touchstart', function() {
+            addButtonPressAnimation(this);
+        });
+    });
+});
+
+// Enhanced keyboard shortcuts
+document.addEventListener('keydown', (event) => {
+    // Ctrl/Cmd + D for dark mode toggle
+    if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'd') {
+        event.preventDefault();
+        toggleTheme();
+    }
+    
+    // Escape key to clear calculator
+    if (event.key === 'Escape') {
+        clearPressed();
+    }
+    
+    // Backspace to delete last digit
+    if (event.key === 'Backspace') {
+        event.preventDefault();
+        deleteLastDigit();
+    }
+});
+
+// Function to delete last digit
+function deleteLastDigit() {
+    var currentValue = getValue().toString();
+    
+    if (currentValue.length > 1) {
+        var newValue = currentValue.slice(0, -1);
+        setValue(parseFloat(newValue) || 0);
+    } else {
+        setValue(0);
+    }
+}
+
+// Add button press animations
+function addButtonPressAnimation(button) {
+    button.classList.add('pressed');
+    setTimeout(() => {
+        button.classList.remove('pressed');
+    }, 100);
+}
+
+// Add visual feedback for keyboard presses
+document.addEventListener('keydown', function(event) {
+    const keyMap = {
+        '0': '0', '1': '1', '2': '2', '3': '3', '4': '4',
+        '5': '5', '6': '6', '7': '7', '8': '8', '9': '9',
+        '+': '+', '-': '-', '*': 'x', '/': '÷', 
+        '=': '=', 'Enter': '=', '.': '.',
+        'c': 'C', 'C': 'C'
+    };
+    
+    const key = keyMap[event.key];
+    if (key) {
+        // Find and animate the corresponding button
+        const buttons = document.querySelectorAll('.btn');
+        buttons.forEach(button => {
+            if (button.textContent.trim() === key) {
+                addButtonPressAnimation(button);
+            }
+        });
+    }
+});
+
 // TODO: Add key press logics
 document.addEventListener('keypress', (event) => {
     if (event.key.match(/^\d+$/)) {
         numberPressed(event.key);
     } else if (event.key == '.') {
         decimalPressed();
-    } else if (event.key.match(/^[-*+/]$/)) {
+    } else if (event.key.match(/^[-*+/^]$/)) {
         operationPressed(event.key);
     } else if (event.key == '=') {
         equalPressed();
+    } else if (event.key.toLowerCase() == 's') {
+        sqrtPressed(); // Press 's' for square root
     }
 });
 

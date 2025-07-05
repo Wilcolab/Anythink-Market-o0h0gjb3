@@ -4,6 +4,7 @@ BODY {
     padding: 0;
     margin: 0;
     background-color: #1b4076;
+    transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 @media screen and (min-device-width: 500px) and (min-device-height: 1024px) {
@@ -183,4 +184,158 @@ BODY {
     border: 1px solid black;
     background-color: #d5d5d5;
     margin: 4px;
+}
+
+/* Theme Toggle Button */
+.theme-toggle-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1000;
+}
+
+.theme-toggle-btn {
+    background: rgba(255, 255, 255, 0.1);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    font-size: 20px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+}
+
+.theme-toggle-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: scale(1.1);
+}
+
+/* Dark Mode Styles */
+body.dark-mode {
+    background-color: #1a1a1a;
+}
+
+body.dark-mode .container {
+    background-image: none;
+    background-color: #2d2d2d;
+    border-radius: 15px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+body.dark-mode #result {
+    background-color: #404040;
+    color: #fff;
+    border-radius: 8px;
+}
+
+body.dark-mode .btn {
+    background-color: #505050;
+    color: #fff;
+    border: 1px solid #666;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+}
+
+body.dark-mode .btn:hover {
+    background-color: #606060;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+body.dark-mode .btn:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+body.dark-mode .resultchar {
+    background-image: url('digits-darkgrey.png');
+}
+
+body.dark-mode .theme-toggle-btn {
+    background: rgba(0, 0, 0, 0.2);
+    border: 2px solid rgba(255, 255, 255, 0.4);
+    color: #fff;
+}
+
+body.dark-mode .theme-toggle-btn:hover {
+    background: rgba(0, 0, 0, 0.3);
+    border-color: rgba(255, 255, 255, 0.6);
+}
+
+/* Enhanced Loading Animation */
+#loading {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 40px;
+    height: 40px;
+    border: 3px solid rgba(255, 255, 255, 0.3);
+    border-top: 3px solid #fff;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+body.dark-mode #loading {
+    border: 3px solid rgba(255, 255, 255, 0.2);
+    border-top: 3px solid #4CAF50;
+}
+
+@keyframes spin {
+    0% { transform: translate(-50%, -50%) rotate(0deg); }
+    100% { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+/* Button press animations */
+.btn.pressed {
+    transform: scale(0.95);
+    transition: transform 0.1s ease;
+}
+
+/* Responsive improvements */
+@media (max-width: 480px) {
+    .container {
+        width: 90%;
+        max-width: 300px;
+    }
+    
+    .theme-toggle-container {
+        top: 10px;
+        right: 10px;
+    }
+    
+    .theme-toggle-btn {
+        width: 40px;
+        height: 40px;
+        font-size: 16px;
+    }
+}
+
+body:not(.dark-mode) .btn {
+    border-radius: 8px;
+    transition: all 0.2s ease;
+}
+
+body:not(.dark-mode) .btn:hover {
+    background-color: #e5e5e5;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+body:not(.dark-mode) .btn:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+body:not(.dark-mode) #result {
+    border-radius: 8px;
+}
+
+body:not(.dark-mode) .container {
+    border-radius: 15px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
 }

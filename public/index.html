@@ -5,7 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
     <script src="client.js"></script>
   </head>
-  <body onLoad="setValue(0)">
+  <body onLoad="setValue(0); loadTheme()">>
+    <div class="theme-toggle-container">
+      <button id="theme-toggle" class="theme-toggle-btn" onclick="toggleTheme()">🌙</button>
+    </div>
     <div class="container">
       <div id="results">
         <div id="result"><span class="digit0">0</span></div>
@@ -42,6 +45,7 @@
 
             <!-- TODO: Buttons -->
             <button class="btn" onclick="operationPressed('^')">^</button>
+            <button class="btn" onclick="sqrtPressed()">√</button>
           </div>
         </div>
       </div>
